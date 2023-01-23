@@ -191,7 +191,7 @@ async fn rocket() -> Rocket<Build> {
                 lang_detect_endpoint,
                 translation_endpoint,
                 summarize_endpoint,
-                nlp,
+                // nlp,
                 // dialog_endpoint
             ],
         )
