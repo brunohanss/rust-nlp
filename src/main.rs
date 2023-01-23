@@ -128,46 +128,46 @@ async fn translation_endpoint(
     Json(result)
 }
 
-#[post("/nlp/<name>", format = "json", data = "<input>")] // <- route attribute
-async fn nlp(name: &str, model: &State<Mutex<Models>>, input: Json<DataInput>,) -> &'static str {
-    model
-        .lock()
-        .await
-        .conversation_module.say(&input.input);
-    let answer = model
-        .lock()
-        .await
-        .conversation_module.answer();
-    model
-        .lock()
-        .await
-        .conversation_module.find_or_create(Uuid::from_str(name).unwrap());
-    // let final_answer = answer.get(&Uuid::from_str(name).unwrap());
-    "Hello"
+// #[post("/nlp/<name>", format = "json", data = "<input>")] // <- route attribute
+// async fn nlp(name: &str, model: &State<Mutex<Models>>, input: Json<DataInput>,) -> &'static str {
+//     model
+//         .lock()
+//         .await
+//         .conversation_module.say(&input.input);
+//     let answer = model
+//         .lock()
+//         .await
+//         .conversation_module.answer();
+//     model
+//         .lock()
+//         .await
+//         .conversation_module.find_or_create(Uuid::from_str(name).unwrap());
+//     // let final_answer = answer.get(&Uuid::from_str(name).unwrap());
+//     "Hello"
 
-}
+// }
 
-async fn say(input: &str) {
-    let conv = tokio::task::spawn_blocking(|| -> Result<Conv, RustBertError> {
-        let conv: Conv = dialog::Conv::new("default", 100);
-        Ok(conv)
-    });
-    let result = conv.await.unwrap();
-    let answer = match result {
-        Ok(conversation) => conversation,
-        Err(error) => panic!("Problem getting Conv: {:?}", error),
-    };
+// async fn say(input: &str) {
+//     let conv = tokio::task::spawn_blocking(|| -> Result<Conv, RustBertError> {
+//         let conv: Conv = dialog::Conv::new("default", 100);
+//         Ok(conv)
+//     });
+//     let result = conv.await.unwrap();
+//     let answer = match result {
+//         Ok(conversation) => conversation,
+//         Err(error) => panic!("Problem getting Conv: {:?}", error),
+//     };
 
-    // NlpRuleChecker::new().check("She was not been here since Monday.");
-    // let conv = dialog::Conv::new("default", 10);
-    let response = answer.say(input);
-    let response_txt = match response {
-        Ok(res) => res,
-        Err(_) => todo!(),
-    };
+//     // NlpRuleChecker::new().check("She was not been here since Monday.");
+//     // let conv = dialog::Conv::new("default", 10);
+//     let response = answer.say(input);
+//     let response_txt = match response {
+//         Ok(res) => res,
+//         Err(_) => todo!(),
+//     };
 
-    println!("Here is the answer {:?}", response_txt);
-}
+//     println!("Here is the answer {:?}", response_txt);
+// }
 
 #[launch]
 async fn rocket() -> Rocket<Build> {
@@ -181,7 +181,7 @@ async fn rocket() -> Rocket<Build> {
             translation: translation::load().await,
             question_answering: question_answering::load().await,
             summarize: summarization::load().await, // symspell: spell_check::load(),
-            conversation_module: ConvModule::new().await,
+            // conversation_module: ConvModule::new().await,
         }))
         .mount(
             "/",
@@ -197,22 +197,22 @@ async fn rocket() -> Rocket<Build> {
         )
     // .mount("/", routes![nlp])
 }
-async fn load_conv_model() -> ConversationModel {
-    let conv_model = tokio::task::spawn_blocking(|| -> Result<ConversationModel, RustBertError> {
-        let conv = ConversationModel::new(ConversationConfig {
-            do_sample: false,
-            num_beams: 3,
-            ..Default::default()
-        })?;
-        Ok(conv)
-    });
-    let result = conv_model.await.unwrap();
-    match result {
-        Ok(model) => model,
-        Err(error) => panic!("Problem getting conv: {:?}", error),
-    }
+// async fn load_conv_model() -> ConversationModel {
+//     let conv_model = tokio::task::spawn_blocking(|| -> Result<ConversationModel, RustBertError> {
+//         let conv = ConversationModel::new(ConversationConfig {
+//             do_sample: false,
+//             num_beams: 3,
+//             ..Default::default()
+//         })?;
+//         Ok(conv)
+//     });
+//     let result = conv_model.await.unwrap();
+//     match result {
+//         Ok(model) => model,
+//         Err(error) => panic!("Problem getting conv: {:?}", error),
+//     }
 
-}
+// }
 
 fn get_word_position(original: String, word: &String) -> std::option::Option<usize> {
     return original.find(word);
@@ -249,7 +249,7 @@ pub struct Models {
     translation: TranslationModel,
     question_answering: QuestionAnsweringModel,
     summarize: SummarizationModel,
-    conversation_module: ConvModule,
+    // conversation_module: ConvModule,
 }
 pub struct StateApp {
     // managers: Managers,
