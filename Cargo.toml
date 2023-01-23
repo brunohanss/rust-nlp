@@ -1,0 +1,32 @@
+[package]
+name = "test-rust"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = {version= "1.23.0", features = ["full"] }
+serde = "1.0.130"
+nlprule = "0.6.4"
+lingua = { version = "1.4.0", default-features = false, features = ["french", "english"] }
+scopeguard = "1.1.0"
+rust-bert = "0.19.0"
+Inflector = "0.11.4"
+err-derive = "0.3.1"
+
+
+
+[dependencies.rocket]
+version = "0.5.0-rc.1"
+features = ["json"]
+
+
+[dependencies.uuid]
+version = "1.2.2"
+features = [
+    "v4",                # Lets you generate random UUIDs
+    "fast-rng",          # Use a faster (but still sufficiently random) RNG
+    "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
+    "serde", 
+]
